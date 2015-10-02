@@ -1,13 +1,12 @@
 <?php
-require_once __DIR__ . "/php/SQL/sql.php";
-require_once __DIR__ . "/php/util/html.php";
-require_once __DIR__ . "/php/globals.php";
+
+require_once __DIR__ . "/bootstrap.php";
 
 $content = <<<CODE
 	<div class="box half-width center">
 		<h1>Welcome!</h1>
 		<p>
-		Uploading Spreadsheet files will convert them into a database 
+		Uploading Spreadsheet files will convert them into a database
 		for use in generating reports.
 		<br>Multiple files may be uploaded at one time.
 		<br><b>Supported file extensions: [ .xls , .xml ]</b>
@@ -21,4 +20,4 @@ $content = <<<CODE
 	</div>
 CODE;
 
-echo \html\gen_html('',$content);
+echo \util\Html::genHtml('', $content);

@@ -1,48 +1,40 @@
 <?php
 
-require_once __DIR__ . "/php/SQL/sql_query.php";
-require_once __DIR__ . "/php/SQL/sql.php";
-require_once __DIR__ . "/php/Reports/report.php";
-require_once __DIR__ . "/php/Reports/chart.php";
-require_once __DIR__ . "/php/globals.php";
+require_once __DIR__ . "/bootstrap.php";
 
-$sql = new SQL();
+$sql = new \sql\Database();
 $report = null;
 
-if(isset($_GET['report'])){
-    $report = Report::Get($_GET['report']);
-    $sql->set_db(\globals\dbname);
+if (isset($_GET['report'])) {
+    $report = \reports\Report::get($_GET['report']);
+    $sql->selectDB(\globals\dbname);
     $report->run($sql);
-}
-
-else if(isset($_GET['table'])){
-	$sql->set_db(\globals\dbname);
+} else if (isset($_GET['table'])) {
+    $sql->selectDB(\globals\dbname);
     $table = $_GET['table'];
-    $query = (new SQL_Query())
+    $query = (new \sql\SqlQuery())
         ->select('*')
         ->from($table);
 
-    $chart = (new Chart())
+    $chart = (new \reports\Chart())
         ->setType('Table');
 
-    $report = (new Report())
+    $report = (new \reports\Report())
         ->setTitle($table)
         ->setQuery($query)
         ->setChart($chart)
         ->run($sql);
-}
-
-else if(isset($_GET['serial'])){
-	$report = Report::unserialize($_GET['serial']);
-	$sql->set_db(\globals\dbname);
+} else if (isset($_GET['serial'])) {
+    $report = \reports\Report::unserialize($_GET['serial']);
+    $sql->selectDB(\globals\dbname);
     $report->run($sql);
 }
 
-if(!is_null($report)){ 
+if (!is_null($report)) {
 
-	$head = $report->html('chart_container');
-	$content = <<<CODE
+    $head = $report->html('chart_container');
+    $content = <<<CODE
 		<div id="chart_container" class="chart"></div>
 CODE;
-	echo \html\gen_html($head,$content);
+    echo \util\Html::genHtml($head, $content);
 }

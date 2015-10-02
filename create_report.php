@@ -1,7 +1,6 @@
 <?php
-require_once __DIR__ . "/php/SQL/sql.php";
-require_once __DIR__ . "/php/util/html.php";
-require_once __DIR__ . "/php/globals.php";
+
+require_once __DIR__ . "/bootstrap.php";
 
 $script = <<<CODE
 CODE;
@@ -13,7 +12,7 @@ $content = <<<CODE
 				<legend>Required</legend>
 					<input class="half-width" name="title" type="text" placeholder="Title" required><br><br>
 					<input class="half-width" name="sql" type="text" placeholder="SQL" required><br><br>
-					
+
 					<select class="half-width" name="type" required>
 						<option value="AreaChart">Area Chart</option>
 						<option value="BarChart">Bar Chart</option>
@@ -46,4 +45,4 @@ $content = <<<CODE
 	</div>
 CODE;
 
-echo \html\gen_html($script,$content);
+echo \util\Html::genHtml($script, $content);
