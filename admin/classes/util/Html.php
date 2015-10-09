@@ -7,7 +7,7 @@ class Html {
     public static function genNavbar() {
         $menu_tables = self::genDropdownBox('Tables', self::genTableList());
         $menu_reports = self::genDropdownBox('reports', self::genReportList());
-        return "<nav class='navbar navbar-nav navbar-fixed-top' role='navigation'>
+        return "<nav class='navbar navbar-default navbar-fixed-top' role='navigation'>
         <div class='container-fluid'>
             <div id='navbar' class='collapse navbar-collapse'>
                 <ul class='nav navbar-nav'>
