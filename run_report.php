@@ -7,34 +7,43 @@ $report = null;
 
 if (isset($_GET['report'])) {
     $report = \reports\Report::get($_GET['report']);
-    $sql->selectDB(\globals\dbname);
+    $sql->selectDB(\util\Config::$database->tablesDB);
     $report->run($sql);
 } else if (isset($_GET['table'])) {
-    $sql->selectDB(\globals\dbname);
+    $sql->selectDB(\util\Config::$database->tablesDB);
     $table = $_GET['table'];
-    $query = (new \sql\SqlQuery())
-        ->select('*')
-        ->from($table);
 
-    $chart = (new \reports\Chart())
-        ->setType('Table');
+    $chart = new \reports\Chart();
+    $chart->setType('Table');
 
-    $report = (new \reports\Report())
-        ->setTitle($table)
-        ->setQuery($query)
-        ->setChart($chart)
-        ->run($sql);
+    $report = new \reports\Report();
+    $report->setTitle($table)
+           ->setQuery("SELECT * FROM $table")
+           ->setChart($chart)
+           ->run($sql);
 } else if (isset($_GET['serial'])) {
     $report = \reports\Report::unserialize($_GET['serial']);
-    $sql->selectDB(\globals\dbname);
+    $sql->selectDB(\util\Config::$database->tablesDB);
     $report->run($sql);
 }
 
 if (!is_null($report)) {
-
-    $head = $report->html('chart_container');
-    $content = <<<CODE
-		<div id="chart_container" class="chart"></div>
-CODE;
-    echo \util\Html::genHtml($head, $content);
+    $header = new \html\Header();
+    $header->title("Stats Dashboard")
+           ->css('css/style.min.css')
+           ->js('js/jquery.min.js','js/bootstrap.min.js')
+           ->addToIncludes($report->script('chart_container'));
+    $content = "<div id='chart_container' class='chart'></div>";
+    echo "<!DOCTYPE html>
+<html lang='en'>"
+.$header->html().
+		"<body>
+			<header>".\util\Html::genNavbar()."</header>
+			<article>
+				$content
+			</article>
+			<footer>
+			</footer>
+		</body>
+	</html>";
 }

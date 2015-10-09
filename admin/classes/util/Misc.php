@@ -2,7 +2,7 @@
 
 namespace util;
 
-class Utility {
+class Misc {
 
     public static function loadClass($classname) {
         if (stripos($classname,'PHPExcel') !== false) {

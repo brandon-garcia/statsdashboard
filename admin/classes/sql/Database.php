@@ -5,7 +5,7 @@ namespace sql;
 class Database {
 
     public function __construct() {
-        $this->link = (\mysql_connect(\globals\dbhost, \globals\dbuser, \globals\dbpass) or die(\mysql_error()));
+        $this->link = (\mysql_connect(\util\Config::$database->host, \util\Config::$database->user, \util\Config::$database->pass) or die(\mysql_error()));
     }
 
     public function __destruct() {

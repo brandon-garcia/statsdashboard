@@ -3,53 +3,65 @@
 require_once __DIR__ . "/bootstrap.php";
 
 $file_tables = array();
-foreach ($_FILES["spreadsheets"]["error"] as $key => $error) {
-    if ($error == UPLOAD_ERR_OK) {
-        $tmp_name = $_FILES["spreadsheets"]["tmp_name"][$key];
-        $name = $_FILES["spreadsheets"]["name"][$key];
-        $name = preg_replace('/\s+/', '_', $name);
-        move_uploaded_file($tmp_name, "tmp/$name");
-        $file_tables[] = \excel2sql\SqlConvert::convertToSql("tmp/$name", \globals\dbname);
-        unlink("tmp/$name");
-    }
+if (!empty($_POST["spreadsheet"])) {
+    $file_table = \excel2sql\SqlConvert::convertToSql($_POST['spreadsheet'], \util\Config::$database->tablesDB);
+    unlink($_POST['spreadsheet']);
 }
 
 $sql = new \sql\Database();
-$sql->selectDB(\globals\dbname);
+$sql->selectDB(\util\Config::$database->tablesDB);
 
 $reports = array();
-foreach ($file_tables as $tables) {
-    foreach ($tables as $tname) {
-        $query = (new \sql\SqlQuery())
-            ->select('*')
-            ->from($tname);
+foreach ($file_table as $tname) {
 
-        $chart = (new \reports\Chart())
-            ->setType('Table');
+    $chart = new \reports\Chart();
+    $chart->setType('Table');
 
-        $reports[] = (new \reports\Report())
-            ->setTitle($tname)
-            ->setQuery($query)
-            ->setChart($chart)
-            ->run($sql);
-    }
+    $report = new \reports\Report();
+    $report->setTitle($tname)
+           ->setQuery("SELECT * FROM $tname")
+           ->setChart($chart)
+           ->run($sql);
+    $reports[] = $report;
 }
+$header = new \html\Header();
+$header->title("Wheaton College - DataVis")
+       ->css('css/style.min.css')
+       ->js('js/jquery.min.js','js/bootstrap.min.js');
 
 if (!empty($reports)) {
 
     $head = '';
     for ($ir = 0; $ir < count($reports); ++$ir)
-        $head .= $reports[$ir]->html("chart_container_$ir");
+        $head .= $reports[$ir]->script("chart_container_$ir");
 
     $content = "";
     for ($ir = 0; $ir < count($reports); ++$ir)
         $content .= "<div id=\"chart_container_$ir\"></div><br><br>";
-    echo \util\Html::genHtml($head, $content);
+
+    $header->addToIncludes($head);
+    
 } else {
-    $content = <<<CODE
-	<div class="box half-width center">"No tables were Uploaded!"</div>;
-CODE;
-    echo \util\Html::genHtml('', $content);
+    $content = "<div class='box half-width center'>'No tables were Uploaded!'</div>";
 }
 
+echo "<!DOCTYPE html>
+<html lang='en'>"
+.$header->html().
+		"<body>
+			<header>
+				<noscript>
+					JavaScript must be enabled in order for you to use this service.
+					However, it seems JavaScript is either disabled or not supported by your browser.
+					To use this service, enable JavaScript by changing your  browser options,
+					then try again.
+				</noscript>". \util\Html::genNavbar()
+			."</header>
+			<article>
+				$content
+			</article>
+			<footer>
+			</footer>
+		</body>
+	</html>";
 

@@ -36,11 +36,6 @@ class Chart {
         $this->names = $names;
         return $this;
     }
-
-    public function html($div_id) {
-        return \reports\visualization\ChartCode::html($this, $div_id);
-    }
-
 }
 
 ?>

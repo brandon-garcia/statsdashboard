@@ -30,7 +30,7 @@ class SqlTable {
                 return array(
                     'drop' => "DROP TABLE IF EXISTS $this->name;",
                     'creation' => "CREATE TABLE $this->name ($header->creation);",
-                    'insertion' => "INSERT INTO $this->name ($header->insertion) VALUES ".\util\Utility::array2str($entries).';'
+                    'insertion' => "INSERT INTO $this->name ($header->insertion) VALUES ".\util\Misc::array2str($entries).';'
                 );
             }
         }
@@ -40,7 +40,7 @@ class SqlTable {
 
     //ex: 'filename_worksheet_name'
     private function genName($filename, $worksheet_name) {
-        $filename = \util\Utility::regexExtractFilename($filename);
+        $filename = \util\Misc::regexExtractFilename($filename);
         $tbl_name = "{$filename[0]}_$worksheet_name";
 
         # ' ' => '_'

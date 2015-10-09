@@ -33,8 +33,8 @@ class SqlHeader {
         }
 
         $ret = new \stdClass();
-        $ret->insertion = \util\Utility::array2str($insertion);
-        $ret->creation = \util\Utility::array2str($creation);
+        $ret->insertion = \util\Misc::array2str($insertion);
+        $ret->creation = \util\Misc::array2str($creation);
 
         return $ret;
     }

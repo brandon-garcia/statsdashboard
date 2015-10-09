@@ -5,22 +5,25 @@ namespace util;
 class Html {
 
     public static function genNavbar() {
-        $g_AppName = \globals\AppName;
         $menu_tables = self::genDropdownBox('Tables', self::genTableList());
         $menu_reports = self::genDropdownBox('reports', self::genReportList());
-        return "<nav>
-		<ul>
-		<li><a href='index.php'>Home</a></li>
-		$menu_tables
-		$menu_reports
-		<li><a href='create_report.php'>Create Report</a></li>
-		</ul>
+        return "<nav class='navbar navbar-nav navbar-fixed-top' role='navigation'>
+        <div class='container-fluid'>
+            <div id='navbar' class='collapse navbar-collapse'>
+                <ul class='nav navbar-nav'>
+                <li><a href='index.php'>Home</a></li>
+                $menu_tables
+                $menu_reports
+                <li><a href='create_report.php'>Create Report</a></li>
+                </ul>
+            </div>
+        </div>
 	</nav>";
     }
 
     public static function genTableList() {
         $sql = new \sql\Database();
-        $sql->selectDB(\globals\dbname);
+        $sql->selectDB(\util\Config::$database->tablesDB);
         $table_names = $sql->tableNames();
         $list = "";
         foreach ($table_names as $tname)
@@ -37,10 +40,12 @@ class Html {
     }
 
     public static function genDropdownBox($name, $contents) {
-        return "<li>
-            <a href='#'>$name &#9660</a></div>
-            <ul>$contents</ul>
-        </li>";
+        return "<li class='dropdown'>
+                  <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'>$name <span class='caret'></span></a>
+                  <ul class='dropdown-menu'>
+                    $contents
+                  </ul>
+                </li>";
     }
 
     public static function genTable($caption, $fields, $entries) {
@@ -62,43 +67,4 @@ class Html {
         }
         return $table . '</table>';
     }
-
-    public static function genHtml($head, $content) {
-        $navbar = self::genNavbar();
-
-        return "<!DOCTYPE html>
-	<html lang=\'en\'>
-		<head>
-			<meta charset='utf-8'>
-			<meta name='viewport' content='width=device-width, initial-scale=1.0'>
-			<meta name='description' content=''>
-			<meta name='author' content=''>
-			<title>Wheaton College - DataVis</title>
-			<link rel='stylesheet' href='css/style.css'>
-			<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-			<!--[if lt IE 9]>
-				<script type='text/javascript' src='js/html5shiv.js'></script>
-			<![endif]-->
-			<script src='js/jquery.min.js'></script>
-			$head
-		</head>
-		<body>
-			<header>
-				<noscript>
-					JavaScript must be enabled in order for you to use this service.
-					However, it seems JavaScript is either disabled or not supported by your browser.
-					To use this service, enable JavaScript by changing your  browser options,
-					then try again.
-				</noscript>
-				$navbar
-			</header>
-			<article>
-				$content
-			</article>
-			<footer>
-			</footer>
-		</body>
-	</html>";
-    }
-
 }

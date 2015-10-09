@@ -21,7 +21,7 @@ class SqlEntry {
 
     public function finalize() {
         if (count($this->cells)) {
-            if ($str = \util\Utility::array2str(array_column($this->cells,'value'))) {
+            if ($str = \util\Misc::array2str(array_column($this->cells,'value'))) {
                 return " ($str)";
             }
         }
