@@ -72,7 +72,7 @@ if (isset($_POST['submit'])) {
 }
 
 $header = new \html\Header();
-$header->title("Wheaton College - DataVis")
+$header->title(\util\Config::$app->name)
        ->css('css/style.min.css')
        ->js('js/jquery.min.js','js/bootstrap.min.js');
 

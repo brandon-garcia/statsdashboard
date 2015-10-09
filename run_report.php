@@ -29,7 +29,7 @@ if (isset($_GET['report'])) {
 
 if (!is_null($report)) {
     $header = new \html\Header();
-    $header->title("Stats Dashboard")
+    $header->title(\util\Config::$app->name)
            ->css('css/style.min.css')
            ->js('js/jquery.min.js','js/bootstrap.min.js')
            ->addToIncludes($report->script('chart_container'));
